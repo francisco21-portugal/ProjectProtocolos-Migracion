@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+@section Scripts {
+    <script>
+        // COMENTADO: contador de intentos fallidos del esquema antiguo.
+        // Ahora la API controla los intentos y devuelve sus propios mensajes.
+        // var Contador = 0;
+
+        $("#btnIniciarSesion").on("click", function () {
+            var xUsuario = $("#txtUsuario").val();
+            var xContrasenia = $("#txtContrasenia").val();
+            if (xUsuario != "" && xContrasenia != "") {
+                // Show loading state
+                const btn = $(this);
+                btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando...');
+                $.ajax({
+                    url: "@Url.Action("IniiciarSesion_Controller", "Home")",
+                    type: "POST",
+                    data: {
+                        user: xUsuario,
+                        pass: xContrasenia
+                    },
+                    success: function (data) {
+                        btn.prop('disabled', false).text('Iniciar Sesión');
+                        // LOGIN VÍA API DE USUARIOS LABORATORIOS PORTUGAL
+                        // El controlador ahora responde:   
+                        // { exito, mensaje, dni, nombres, apellidos, correo, token, funcionalidades }
+                        if (data.exito) {
+
+                            // Nombre completo para mostrar en el sidebar del sistema.
+                            // El _Layout.cshtml lo lee desde localStorage para mostrarlo en el menú.
+                            localStorage.setItem("user", ((data.nombres || '') + ' ' + (data.apellidos || '')).trim());
+
+                            // "userid" guarda el DNI de la persona que está logeando y es el mismo dato
+                            // que se utiliza en todas las funciones AJAX del sistema.
+                            localStorage.setItem("userid", data.dni);
+
+                            // Token JWT entregado por la API; queda disponible para las funciones
+                            // que deban autenticarse contra otros servicios.
+                            localStorage.setItem("token", data.token);
+
+                            // NOTA: El filtrado del menú por funcionalidades se realiza en el SERVIDOR
+                            // (_Layout.cshtml) usando los claims de sesión, NO desde JavaScript.
+                            // Guardamos las funcionalidades en localStorage solo como referencia
+                            // por si algún módulo JS necesita consultarlas en el futuro.
+                            if (data.funcionalidades && data.funcionalidades.length > 0) {
+                                localStorage.setItem("funcionalidades", JSON.stringify(data.funcionalidades));
+                            }
+
+                            Swal.fire({
+                                title: '¡Éxito!',
+                                text: 'Bienvenido ' + ((data.nombres || '') + ' ' + (data.apellidos || '') + ', ' + (data.mensaje || '')).trim(),
+                                icon: "success",
+                                confirmButtonText: "Ir al Panel"
+                            }).then((result) => {
+                                // Si llegamos al login porque la sesión de 4 horas expiró o por
+                                // acceso denegado, el middleware agrega ?ReturnUrl=/pagina-anterior;
+                                // en ese caso volvemos a esa página. Si es un login normal,
+                                // vamos al panel principal.
+                                const params = new URLSearchParams(window.location.search);
+                                const returnUrl = params.get('ReturnUrl');
+
+                                // Solo se acepta una ruta interna (empieza con "/" y no es "//")
+                                if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')) {
+                                    window.location.href = returnUrl;
+                                } else {
+                                    window.location.href = '/Home/Informacion';
+                                }
+                            });
+                        } else {
+                            // La API rechazó el acceso: se muestra su mensaje tal cual (puede variar: usuario/contraseña incorrectos, sin acceso, etc.)
+                            Swal.fire({
+                                title: 'Acceso Denegado',
+                                text: data.mensaje,
+                                icon: "error",
+                                confirmButtonText: "Reintentar"
+                            });
+                            $("#txtContrasenia").val("");
+                        }
+                    },
+                    error: function () {
+                        btn.prop('disabled', false).text('Iniciar Sesión');
+                        Swal.fire('Error', 'Hubo un problema al conectar con el servidor', 'error');
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Campos Incompletos",
+                    text: "Por favor, ingrese su usuario y contraseña",
+                    icon: "info",
+                    confirmButtonText: "Entendido"
+                });
+            }
+        });
+
+    </script>
+}
+
+
+<div class="login-wrapper">
+    <div class="login-container">
+        <!-- Visual Side -->
+        <div class="login-visual"></div>
+        <!-- Form Side -->
+        <div class="login-form-side">
+            <div class="login-header">
+                <img src="~/img/LogoPprtugal.png" alt="Laboratorios PORTUGAL" />
+                <h1>Bienvenido</h1>
+                <p>SISTEMA DE PROTOCOLOS CONTROL DE CALIDAD</p>
+            </div>
+            <form id="loginForm" class="w-100" style="max-width: 400px;">
+                <div class="form-group">
+                    <input type="text" id="txtUsuario" class="form-control-modern" placeholder="Usuario" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="txtContrasenia" class="form-control-modern" placeholder="Contraseña" required />
+                </div>
+                <button type="button" id="btnIniciarSesion" class="btn-login">
+                    Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- IA Agent Icon con Wrapper -->
+    <div class="ia-agent-wrapper">
+        <div class="ia-agent-trigger">
+            <i class="bi bi-robot"></i>
+        </div>
+        <div class="ia-agent-tooltip">
+            <strong>Asistente IA Portugal</strong><br>
+            Este sistema permite el control de calidad y gestión de inventario para insumos de laboratorio farmacéutico.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+/* SweetAlert2 Theme Overrides */
+.swal2-popup {
+    border-radius: 20px !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 2rem !important;
+}
+
+.swal2-title {
+    color: var(--dark-text) !important;
+    font-weight: 700 !important;
+}
+
+/* Botón de confirmación - Clase CORRECTA */
+.swal2-confirm {
+    background-color: var(--primary-blue) !important;
+    border-radius: 10px !important;
+    padding: 12px 30px !important;
+    font-weight: 600 !important;
+    color: white !important; /* Asegura que el texto sea blanco */
+    border: none !important;
+}
+
+    /* Para asegurar que el botón mantenga el color en hover */
+    .swal2-confirm:hover {
+        background-color: var(--primary-blue-dark) !important; /* Opcional: un tono más oscuro para hover */
+        filter: brightness(0.95) !important;
+    }
+
+/* Botón de cancelar si lo usas */
+.swal2-cancel {
+    border-radius: 10px !important;
+    padding: 12px 30px !important;
+    font-weight: 600 !important;
+}
+
+/* Quitar focus outline */
+.swal2-styled:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Asegurar que el botón no tenga estilos heredados */
+button.swal2-confirm:focus {
+    box-shadow: none !important;
+}

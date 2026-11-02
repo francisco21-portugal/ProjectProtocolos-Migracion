@@ -1,0 +1,514 @@
+﻿@{
+    ViewData["Title"] = "BAHIA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Scripts {
+    <script src="~/js/ControlCalidad/frmBAHIA.js"></script>
+
+    <script>
+         var id_producto;
+         var id_lote;
+         var item_descarga_final;
+        // al abrir la pagina
+        $(document).ready(function() {
+            ufn_TablaCargarColumna();
+        });
+
+        function ufn_TablaCargarColumna() {
+            const startTime = Date.now();
+            let dataLoaded = false;
+            mostrarOverlay();
+            // El filtro de tipo se aplica sobre los datos ya cargados.
+            // El filtro de fecha se aplica en la base de datos.
+            $.fn.dataTable.ext.search =
+                $.fn.dataTable.ext.search.filter(function (funcion) {
+                    return funcion !== filtrarPorTipoMovimiento &&
+                           funcion !== filtrarPorFecha;
+                });
+
+            $.fn.dataTable.ext.search.push(filtrarPorTipoMovimiento);
+            $.fn.dataTable.ext.search.push(filtrarPorFecha);
+
+            if ($.fn.DataTable.isDataTable("#tblMovimientos")) {
+                $("#tblMovimientos").DataTable().clear().destroy();
+            }
+
+
+            $("#tblMovimientos").DataTable({
+
+                ajax: {
+                    url: '@Url.Action("CC_ListarProductosPorCategoria_Controller", "ControlCalidad")',
+                    type: "GET",
+                    data: {
+                        idCategoria: 104
+                    },
+                    dataType: "json",
+                    dataSrc: function (response) {
+                        if (!response || !Array.isArray(response.data)) { return []; }
+                        return response.data;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error real al cargar los movimientos:", status, error,xhr.responseText);
+                        ocultarOverlay();
+                        Swal.fire({
+                            title: "Error",
+                            text: "No se pudieron cargar los movimientos.",
+                            icon: "error",
+                            confirmButtonText: "Aceptar"
+                        });
+                    }
+                },
+                columns: [
+                    {   data: "iDproducto", defaultContent: "" },
+                    {   data: "productoNombre",defaultContent: "" },
+                    {   data: "codigoProducto", defaultContent: "" },
+                    {   data: "iDusuario", defaultContent: "" },
+                    {   data: "fechaRegistro", defaultContent: "--",
+                        render: function (data) {
+                            if (!data) { return "--"; }
+                            return String(data).replace("T", " ");
+                        }
+                    },
+                    {  "render": function (data, type, row) {
+                        return `<div class="dropdown actions-dropdown">
+
+                                <button class="btn btn-sm"
+                                        type="button"
+                                        id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        style="cursor:po    inter;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size:1.2rem;"></i>
+                                </button>
+                                <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <a class="dropdown-item fs-6 py-2"
+                                            style="cursor:pointer;"
+                                            onclick="Cargar(${row.item})"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#frmModalDescargaFinal">
+                                            <i class="bi bi-pencil me-2" style="font-size:1.1rem;"></i>
+                                            FinalizarDescarga
+                                        </a>
+                                    </li>
+                                </ul>
+                        </div>`;
+                        }
+                    }
+                ],
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/2.1.5/i18n/es-MX.json",
+                    lengthMenu: "Mostrar _MENU_ registros por página",
+                    emptyTable: "No hay movimientos registrados para la fecha seleccionada.",
+                    zeroRecords: "No se encontraron registros."
+                },
+                lengthMenu: [ [10, 25, 50, 100], ["10", "25", "50", "100"] ],
+                processing: true,
+                scrollY: "55vh",
+                scrollCollapse: true,
+                scrollX: true,
+                columnDefs: [ { targets: [0, 1, 2, 15,17], visible: false } ],
+                initComplete: function () {
+                    dataLoaded = true;
+                    // Recuperar los filtros generales después de recargar por fecha.
+                    aplicarFiltros();
+                    checkAndHideOverlay(startTime);
+                },
+                drawCallback: function () {
+                    if (!dataLoaded && this.api().ajax.json()) {
+                        dataLoaded = true;
+                        checkAndHideOverlay(startTime);
+                    }
+                }
+            });
+        };
+
+    </script>
+
+}
+
+
+
+
+
+<body>
+    <div class="container-fluid">
+        <!-- Encabezado -->
+        <div class="header py-1">
+            <h1 class="page-title">PRODUCTOS BAHIA</h1>
+            <p class="page-subtitle mb-0 small">Mantenimientos bahia.</p>
+        </div>
+        <!-- Botones de acción -->
+        <div class="row mb-2">
+            <div class="col-md-12 mb-6">
+                <button type="button" class="btn btn-primary-type btn-action w-100" data-bs-toggle="modal" data-bs-target="#CreateDescargaColumnaModal">
+                    <i class="bi bi-plus-circle"></i>
+                    REPORTE LOTE/SERIE
+                </button>
+            </div>
+        </div>
+        <!-- Tabla -->
+        <div class="search-filters">
+            <!-- FILTROS DE BÚSQUEDA POR COLUMNA -->
+            <div class="filtros-tabla mb-3">
+                <div class="row g-2">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroUsuario">Usuario</label>
+                        <input type="text" class="form-control form-control-sm" id="filtroUsuario" placeholder="Buscar por usuario" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroCodigo">Cod. Producto</label>
+                        <input type="text" class="form-control form-control-sm" id="filtroCodigo" placeholder="Buscar por código" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroProducto">Producto Desc.</label>
+                        <input type="text" class="form-control form-control-sm" id="filtroProducto" placeholder="Buscar por producto" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroLote">Lote/Serie</label>
+                        <input type="text" class="form-control form-control-sm" id="filtroLote" placeholder="Buscar por lote" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroTipoMovimiento">Tipo Movimiento</label>
+                        <select class="form-select form-select-sm" id="filtroTipoMovimiento">
+                            <option value="">Todos</option>
+                            <!--<option value="Ingreso">Ingreso</option> -->
+                            <option value="Salida">Salida</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroFechaDesde">Fecha desde</label>
+                        <input type="date" class="form-control form-control-sm" id="filtroFechaDesde" />
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="filter-label" for="filtroFechaHasta">Fecha hasta</label>
+                        <input type="date" class="form-control form-control-sm" id="filtroFechaHasta" />
+                    </div>
+                </div>
+            </div>
+            <!-- Tabla de estándares -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3 class="table-title">LISTA PRODUCTOS</h3>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnLimpiarFiltros">
+                        <i class="bi bi-eraser"></i> Limpiar filtros
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tblMovimientos">
+                        <thead>
+                            <tr>
+                                <th>ID PRODUCTO</th>
+                                <th>PRODUCTO</th>
+                                <th>CODIGO PRODUCTO</th>
+                                <th>FECHA REGISTRO</th>
+                                <th>ID USUARIO</th>
+                                <th>...</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para crear estándar primario lote -->
+        <div class="modal fade" id="CreateDescargaColumnaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CreateDescargaColumnaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="CreateDescargaColumnaModalLabel">Descarga Serie Columna</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="primaryStandardForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cboNombreProducto" class="form-label required-field">Columna</label>
+                                    <select class="form-select" id="cboNombreProducto">
+                                        <option value="" selected disabled>Seleccione Estandar</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtCodigoColumna" class="form-label required-field">Código Columna</label>
+                                    <input type="text" class="form-control" id="txtCodigoColumna" placeholder="COL-000" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cboLoteColumna" class="form-label required-field">Serie</label>
+                                    <select class="form-select" id="cboLoteColumna">
+                                        <option value="" selected disabled>Seleccione Columna</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtCodigoLoteColumna" class="form-label required-field">Código Serie</label>
+                                    <input type="text" class="form-control" id="txtCodigoLoteColumna" placeholder="COL-000-000" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtNroAnalisis" class="form-label required-field">Nro Analisis </label>
+                                    <input type="text" class="form-control" maxlength="100" id="txtNroAnalisis" placeholder="Ingrese Nro Análisis">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtProducto" class="form-label required-field">Producto Descripcion</label>
+                                    <input type="text" class="form-control" maxlength="200" id="txtProducto" placeholder="Ingrese Producto">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtPlatoTeorico" class="form-label required-field">Plato Teórico</label>
+                                    <input type="text" maxlength="200" class="form-control" id="txtPlatoTeorico" placeholder="Ingrese Plato Teórico">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtNroInyecciones" class="form-label required-field">Nro Inyecciones </label>
+                                    <input type="number" class="form-control" maxlength="100" id="txtNroInyecciones" placeholder="Ingrese Inyecciones">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="txtPresion" class="form-label required-field">Presíón</label>
+                                    <input type="number" class="form-control" maxlength="200" id="txtPresion" placeholder="Ingrese Presión">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cboEquipo" class="form-label required-field">Equipo</label>
+                                    <select class="form-select" id="cboEquipo">
+                                        <option value="" selected disabled>Seleccione Equipo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- Columna de ensayos -->
+                                <div class="col-12 col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header modal-title">Ensayos</div>
+                                        <div class="card-body">
+                                            <div id="contenedorEnsayos">
+                                                <span class="text-muted">Cargando ensayos...</span>
+                                            </div>
+                                            <input type="text" class="form-control" maxlength="200" id="txtDescripcionEnsayo" placeholder="Ingrese Otros" hidden>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Columna de áreas -->
+                                <div class="col-12 col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header modal-title"> Áreas de columna </div>
+                                        <div class="card-body">
+                                            <div id="contenedorAreas">
+                                                <span class="text-muted">Cargando áreas...</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="txtDescripcionArea" maxlength="200" placeholder="Ingrese la descripción del área" hidden>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="txtObservacionSubLote" class="form-label">Observaciones </label>
+                                        <input type="text" class="form-control" maxlength="200" id="txtObservacionSubLote" placeholder="Ingrese Observaciones">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="savePrimaryBtn">Descargar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para Descarga Final de Columna -->
+        <div class="modal fade" id="frmModalDescargaFinal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="frmModalDescargaFinalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <style>
+                        #frmModalDescargaFinal .estado-descarga {
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 0.45rem;
+                            margin-top: 0.35rem;
+                            padding: 0.35rem 0.75rem;
+                            border-radius: 999px;
+                            font-size: 0.78rem;
+                            font-weight: 600;
+                            line-height: 1;
+                            transition: all 0.2s ease-in-out;
+                        }
+
+                        #frmModalDescargaFinal .estado-descarga-pendiente {
+                            color: #856404;
+                            background-color: #fff3cd;
+                            border: 1px solid #ffecb5;
+                        }
+
+                            #frmModalDescargaFinal .estado-descarga-pendiente i {
+                                color: #f0ad00;
+                                font-size: 0.95rem;
+                            }
+
+                        #frmModalDescargaFinal .estado-descarga-completada {
+                            color: #0f5132;
+                            background-color: #d1e7dd;
+                            border: 1px solid #badbcc;
+                        }
+
+                            #frmModalDescargaFinal .estado-descarga-completada i {
+                                color: #198754;
+                                font-size: 0.95rem;
+                            }
+
+                        #frmModalDescargaFinal .campos-descarga-bloqueados {
+                            background-color: #f1f3f5 !important;
+                            cursor: not-allowed;
+                        }
+                    </style>
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-semibold" id="frmModalDescargaFinalLabel">
+                            <i class="bi bi-box-arrow-down me-2"></i>Descarga Final - Serie Columna
+                        </h5>
+
+                        <div id="estadoDescargaFinal" class="estado-descarga estado-descarga-pendiente" role="status" aria-live="polite">
+                            <i id="estadoDescargaFinalIcono" class="bi bi-exclamation-circle-fill"></i>
+                            <span id="estadoDescargaFinalTexto"> Falta completar la descarga </span>
+                        </div>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="formDescargaFinal">
+                            <!-- ===== DATOS INFORMATIVOS DEL REGISTRO ===== -->
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-white border-bottom py-2">
+                                    <h6 class="mb-0 fw-semibold text-secondary">
+                                        <i class="bi bi-info-circle me-1"></i>Datos del Registro
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Nro Análisis</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtNroAnalisis" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Producto</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtProducto" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Plato Teórico</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtPlatoTeorico" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Nro Inyecciones</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtNroInyecciones" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Presión</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtPresion" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Equipo</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtEquipo" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Tipo Movimiento</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtTipoMovimiento" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Usuario</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtUsuario" readonly>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label class="form-label text-muted small mb-1">Fecha Registro</label>
+                                            <input type="text" class="form-control form-control-sm bg-light" id="txtFechaRegistro" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ===== ENSAYOS Y ÁREAS ===== -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-12 col-md-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-header bg-white border-bottom py-2">
+                                            <h6 class="mb-0 fw-semibold text-secondary">
+                                                <i class="bi bi-clipboard-check me-1"></i>Ensayos
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="contenedorEnsayos">
+                                                <span class="text-muted small">Cargando ensayos...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-header bg-white border-bottom py-2">
+                                            <h6 class="mb-0 fw-semibold text-secondary">
+                                                <i class="bi bi-grid-3x3-gap me-1"></i>Áreas de Columna
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="contenedorAreas">
+                                                <span class="text-muted small">Cargando áreas...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ===== DATOS DE DESCARGA FINAL ===== -->
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white border-bottom py-2">
+                                    <h6 class="mb-0 fw-semibold text-secondary">
+                                        <i class="bi bi-pencil-square me-1"></i>Datos de Descarga Final
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label for="txtPlatoTeoricoFinal" class="form-label required-field">Plato Teórico Final</label>
+                                            <input type="text" class="form-control" id="txtPlatoTeoricoFinal" maxlength="200" placeholder="Ingrese Plato Teórico Final">
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label for="txtNroInyeccionesFinal" class="form-label required-field">Nro Inyecciones Final</label>
+                                            <input type="number" class="form-control" id="txtNroInyeccionesFinal" placeholder="Ingrese Inyecciones Final">
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <label for="txtPresionFinal" class="form-label required-field">Presión Final</label>
+                                            <input type="number" class="form-control" id="txtPresionFinal" placeholder="Ingrese Presión Final">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="txtObservacionesFinal" class="form-label">Observaciones Finales</label>
+                                            <input type="text" class="form-control" id="txtObservacionesFinal" maxlength="200" placeholder="Ingrese Observaciones Finales">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveDescargaFinalBtn">
+                            <i class="bi bi-check-lg me-1"></i>Guardar Descarga Final
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>

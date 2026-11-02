@@ -1,0 +1,571 @@
+:root {
+    --sidebar-width: 320px; /* Aumentado para mejor visibilidad de textos largos */
+    --sidebar-collapsed: 70px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ============================
+   SIDEBAR
+============================ */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #2f4050;
+    color: #fff;
+    height: 100vh;
+    overflow-y: auto;
+    transition: width .25s ease, transform .25s ease;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1500;
+}
+
+    /* Scroll personalizado del sidebar */
+    .sidebar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: #1a2a38;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #4a6a7a;
+        border-radius: 4px;
+    }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #5a8a9a;
+        }
+
+    /* Sidebar colapsado manualmente */
+    .sidebar.collapsed {
+        width: var(--sidebar-collapsed);
+    }
+
+    /* Header del sidebar */
+    .sidebar .sidebar-header {
+        padding: 1rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(255,255,255,.1);
+        font-size: 1.2rem; /* Letra más grande */
+        white-space: nowrap;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .sidebar .sidebar-header img {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .sidebar .sidebar-header .menu-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+    /* ============================
+   NAV LINKS (Ítems de menú) - LETRAS MÁS GRANDES
+============================ */
+    .sidebar .nav-link {
+        color: #fff;
+        display: flex;
+        align-items: flex-start; /* Cambiado para mejor alineación en textos multilínea */
+        gap: 12px; /* Espacio entre icono y texto */
+        padding: 12px 16px;
+        font-size: 2rem; /* Letra más grande (antes 0.95rem) */
+        text-decoration: none;
+        transition: all 0.2s ease;
+        line-height: 1.4;
+    }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,.1);
+            color: #fff;
+            padding-left: 20px; /* Efecto sutil al hover */
+        }
+
+    /* Iconos más grandes y visibles */
+    .sidebar .nav-icon {
+        font-size: 1.3rem; /* Iconos más grandes */
+        min-width: 28px;
+        flex-shrink: 0;
+        text-align: center;
+        margin-top: 2px; /* Mejor alineación con textos multilínea */
+    }
+
+/* Texto del menú - SOPORTE MULTILÍNEA */
+.menu-text {
+    flex: 1;
+    line-height: 1.5;
+    font-size: 1rem;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal; /* Permite múltiples líneas */
+}
+
+/* ============================
+   SIDEBAR COLAPSADO MANUAL
+   Solo se ven iconos, bien centrados
+============================ */
+.sidebar.collapsed .menu-text {
+    display: none; /* Oculta completamente el texto */
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Cuando está colapsado, centrar iconos */
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+    padding: 12px 0;
+    gap: 0;
+}
+
+.sidebar.collapsed .nav-icon {
+    margin: 0 auto;
+    font-size: 1.3rem;
+}
+
+/* Header centrado cuando colapsado */
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+    .sidebar.collapsed .sidebar-header .menu-text {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-header img {
+        margin: 0 auto;
+    }
+
+/* ============================
+   SUBMENÚS (NIVEL 2, 3, ...)
+============================ */
+.nav-group-items {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    max-height: 0;
+    transition: max-height .35s ease-in-out;
+    padding-left: 0; /* Se maneja con margin en los items */
+}
+
+    /* Items de submenú */
+    .nav-group-items .nav-link {
+        padding-left: 52px; /* Espacio para indicar nivel */
+        font-size: 0.95rem;
+    }
+
+    /* Nivel 3 - más indentado */
+    .nav-group-items .nav-group-items .nav-link {
+        padding-left: 68px;
+        font-size: 0.92rem;
+    }
+
+/* Nivel 2 abierto */
+.nav-group.show > .nav-group-items {
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+/* Nivel 3 abierto */
+.nav-group .nav-group.show > .nav-group-items {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+    /* Scrolls personalizados en submenús */
+    .nav-group.show > .nav-group-items::-webkit-scrollbar,
+    .nav-group .nav-group.show > .nav-group-items::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .nav-group.show > .nav-group-items::-webkit-scrollbar-track,
+    .nav-group .nav-group.show > .nav-group-items::-webkit-scrollbar-track {
+        background: #1a2a38;
+        border-radius: 3px;
+    }
+
+    .nav-group.show > .nav-group-items::-webkit-scrollbar-thumb,
+    .nav-group .nav-group.show > .nav-group-items::-webkit-scrollbar-thumb {
+        background: #4a6a7a;
+        border-radius: 3px;
+    }
+
+/* Cuando sidebar está colapsado, los submenús NO deben abrirse */
+.sidebar.collapsed .nav-group-items {
+    max-height: 0 !important;
+    display: none !important;
+}
+
+/* ============================
+   FLECHAS DE SUBMENÚ
+============================ */
+.nav-group-toggle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer;
+}
+
+    .nav-group-toggle .bi-caret-down-fill {
+        transition: transform 0.25s ease;
+        margin-left: auto;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+    }
+
+.nav-group.show > .nav-group-toggle .bi-caret-down-fill {
+    transform: rotate(180deg);
+}
+
+/* Ocultar flechas cuando sidebar está colapsado */
+.sidebar.collapsed .bi-caret-down-fill {
+    display: none;
+}
+
+/* ============================
+   BOTÓN TOGGLE (MÁS GRANDE Y VISIBLE)
+   CAMBIO: El botón de 3 rayas ya NO es flotante. Se movió al header del
+   sidebar, a la misma altura del nombre del sistema (SysPortugal).
+   Las reglas antiguas de posición fija se comentan para evitar conflictos.
+============================ */
+/* Reglas anteriores (obsoletas, botón estaba fuera del sidebar):
+.toggle-btn {
+    position: fixed;
+    top: 14px;
+    left: calc(var(--sidebar-width) + 5px);
+    transition: left .25s ease, background 0.2s ease;
+    z-index: 2000;
+    font-size: 1.3rem;
+    padding: 10px 14px;
+    background: #2f4050;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+    .toggle-btn:hover {
+        background: #3a5068;
+        transform: scale(1.02);
+    }
+
+.sidebar.collapsed ~ .toggle-btn {
+    left: calc(var(--sidebar-collapsed) + 5px);
+}
+*/
+
+/* Botón toggle integrado en el header del sidebar (misma altura que "SysPortugal") */
+.sidebar-header .toggle-btn {
+    position: static;
+    top: auto;
+    left: auto;
+    margin-left: auto;
+    padding: 8px 10px;
+    font-size: 1.3rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    z-index: auto;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+    .sidebar-header .toggle-btn:hover {
+        background: rgba(255,255,255,.15);
+        transform: scale(1.02);
+    }
+
+/* Al colapsar el menú, el botón se oculta; queda el logo como disparador para expandir */
+.sidebar.collapsed .sidebar-header .toggle-btn {
+    display: none;
+}
+
+/* El logo del sistema se vuelve clicable para EXPANDIR el menú cuando está colapsado */
+.sidebar.collapsed .sidebar-header img {
+    cursor: pointer;
+}
+
+/* ============================
+   FOOTER (CERRAR SESIÓN)
+============================ */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 12px 16px;
+    background: rgba(0,0,0,.08);
+    border-top: 1px solid rgba(255,255,255,.05);
+}
+
+    .sidebar-footer .nav-link {
+        color: #ff6b6b;
+        font-size: 1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .sidebar-footer .nav-link:hover {
+            color: #fff;
+            background: rgba(220, 53, 69, 0.25);
+        }
+/* Footer colapsado */
+.sidebar.collapsed .sidebar-footer .menu-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-footer .nav-link {
+    justify-content: center;
+    padding: 12px 0;
+    gap: 0;
+}
+
+.sidebar.collapsed .sidebar-footer .nav-icon {
+    margin: 0 auto;
+    font-size: 1.3rem;
+}
+
+/* ============================
+   CONTENIDO PRINCIPAL
+============================ */
+.main-content {
+    margin-left: var(--sidebar-width);
+    transition: margin-left .25s ease;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: var(--sidebar-collapsed);
+}
+
+/* ============================
+   MODO RESPONSIVE (MÓVIL Y TABLET)
+   MODIFICADO: En móviles la barra lateral no desaparece por completo. 
+   Queda colapsada (70px) por defecto mostrando sólo iconos, y se expande a 280px como superposición (overlay) al dar clic al toggle.
+============================ */
+@media (max-width: 768px) {
+    .sidebar {
+        /* CAMBIO: Se mantiene visible con ancho reducido de 70px por defecto */
+        width: var(--sidebar-collapsed) !important;
+        position: fixed;
+        z-index: 1500;
+        transform: none !important;
+    }
+
+    /* CAMBIO: Al quitar la clase collapsed, se expande a 280px con sombra superpuesta */
+    .sidebar:not(.collapsed) {
+        width: 280px !important;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+    }
+
+    /* CAMBIO: El botón toggle ya vive dentro del header del sidebar, por lo que
+       las reglas de posición fija para móvil quedan obsoletas (comentadas): */
+    /* Reglas anteriores (obsoletas):
+    .toggle-btn {
+        left: calc(var(--sidebar-collapsed) + 5px) !important;
+        top: 10px;
+        background: #2f4050;
+        padding: 8px 12px;
+        font-size: 1.2rem;
+        z-index: 2001;
+    }
+
+    .sidebar:not(.collapsed) ~ .toggle-btn {
+        left: 285px !important;
+    }
+    */
+
+    /* CAMBIO: Contenido principal respeta el espacio de los iconos (70px) para no desordenar el grid responsivo */
+    .main-content {
+        margin-left: var(--sidebar-collapsed) !important;
+        width: calc(100% - var(--sidebar-collapsed)) !important;
+    }
+
+    /* En móvil, los textos de los enlaces se reducen ligeramente */
+    .sidebar .nav-link {
+        font-size: 0.95rem;
+        padding: 10px 14px;
+    }
+
+    .sidebar .nav-icon {
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================
+   TABLET (entre 769px y 1024px)
+============================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+    :root {
+        --sidebar-width: 280px;
+    }
+
+    .sidebar .nav-link {
+        font-size: 0.95rem;
+        padding: 10px 14px;
+    }
+
+    .sidebar .nav-icon {
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================
+   TEXTO MULTILÍNEA - SOLO CUANDO NO ESTÁ COLAPSADO
+============================ */
+@media (min-width: 769px) {
+    .sidebar:not(.collapsed) .nav-link {
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .sidebar:not(.collapsed) .menu-text {
+        white-space: normal;
+        line-height: 1.4;
+        display: block;
+    }
+    /* Asegura que el icono no se deforme con texto multilínea */
+    .sidebar:not(.collapsed) .nav-link {
+        align-items: flex-start;
+    }
+
+    .sidebar:not(.collapsed) .nav-icon {
+        margin-top: 2px;
+    }
+}
+
+/* ============================
+   MEJORAS VISUALES ADICIONALES
+============================ */
+/* Separador sutil entre items */
+.nav-item {
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+/* MODIFICADO: Resaltado visual para el ítem de menú de la página actualmente activa */
+/* CAMBIO: Se habilitó el borde izquierdo verde sólido y el fondo con transparencia */
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-left: 3px solid #5a9a7a !important;
+    color: #5a9a7a !important;
+    font-weight: bold;
+}
+
+/* IMPLEMENTADO: Resaltado visual para los menús padres/ancestros del menú activo */
+/* CAMBIO: Muestra un borde izquierdo verde translúcido y fondo suave para indicar el camino de navegación */
+.sidebar .nav-group.show-active > .nav-group-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid rgba(90, 154, 122, 0.5); 
+    color: #5a9a7a !important;
+    font-weight: bold;
+}
+
+/* Scroll más suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animación de apertura de submenús */
+.nav-group-items {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================
+   GLOBAL IA AGENT ICON
+   IMPLEMENTADO: Elementos de estilo flotantes para el Agente IA integrado en el Layout global.
+============================ */
+/* Contenedor wrapper agrupador para prevenir parpadeos en hover */
+.ia-agent-wrapper {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 2000;
+}
+
+/* Botón flotante redondo con el icono de robot y animación de pulso */
+.ia-agent-trigger {
+    width: 60px;
+    height: 60px;
+    background: #2c7873; /* Color verde primario de la aplicación */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(44, 120, 115, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: pulse-green 2s infinite;
+}
+
+.ia-agent-trigger:hover {
+    transform: scale(1.1) rotate(5deg);
+    background: #36928c;
+    box-shadow: 0 12px 30px rgba(44, 120, 115, 0.5);
+}
+
+/* Diálogo flotante con la descripción de asistencia del sistema */
+.ia-agent-tooltip {
+    position: absolute;
+    bottom: 75px;
+    right: 0;
+    width: 260px;
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    display: none;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    border-left: 4px solid #20c997;
+    line-height: 1.5;
+}
+
+/* Muestra el diálogo suavemente con animación al hacer hover en el wrapper */
+.ia-agent-wrapper:hover .ia-agent-tooltip {
+    display: block;
+    animation: fadeInAgent 0.3s ease forwards;
+}
+
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 0 0 rgba(44, 120, 115, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(44, 120, 115, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(44, 120, 115, 0);
+    }
+}
+
+@keyframes fadeInAgent {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

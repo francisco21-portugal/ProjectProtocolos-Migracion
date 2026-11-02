@@ -1,0 +1,195 @@
+﻿@{
+    ViewData["Title"] = "Informacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // alert(localStorage.getItem("userid"));
+            cargar(localStorage.getItem("userid"));
+        });
+
+        function cargar(Valor) {
+            $.ajax({
+                url: "@Url.Action("CC_UsuariosObtener_Controller", "Home")",
+                type: 'GET',
+                data: { dni: Valor }, // Enviar al controlador
+                success: function (data) {
+
+                    $('#lblNombre').text(data.nombres);
+                    $('#lblApellidos').text(data.apellidos);
+                    ///$('#lblDocumento').text(data.nroDocumento);
+                    $('#lblNroDocumento').text(data.nroDocumento);
+                    $('#lblCorreoElectronico').text(data.correo);
+                    $('#lblUsuarioNombre').text(data.usuario);
+                    $('#lblFechaRegistro').text(data.fechaIngreso.replace("T"," "));
+                    // $('#lblRolAsignado').text("borrar");
+                    $('#lblEstado').text(data.estado ? "ACTIVO" : "INACTIVO");
+                },
+                error: function () {
+                    alert('Error al cargar los datos de la empresa.');
+                }
+            });
+        };
+
+    </script>
+}
+
+<div class="container-fluid py-4"
+     style="background-color: #f8fafc; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+
+    <!-- CARD PRINCIPAL -->
+    <div class="card shadow-sm border-0 bg-white mx-auto" style="border-radius: 16px; max-width: 1200px;">
+
+        <!-- HEADER CORPORATIVO -->
+        <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
+            <div class="row align-items-center g-3">
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <img src="~/img/LogoPprtugal.png" style="max-height: 85px; width: auto; object-fit: contain;"
+                         alt="Logo Portugal" />
+                </div>
+                <div class="col-12 col-md text-center text-md-start border-start-md ps-md-4"
+                     style="border-color: #e2e8f0 !important;">
+                    <span class="text-uppercase tracking-wider text-muted fw-bold small" style="letter-spacing: 1px;">
+                        Laboratorio
+                    </span>
+                    <h2 class="fw-extrabold mb-1 text-dark"
+                        style="color: #1e293b; font-weight: 800; letter-spacing: -0.5px;">
+                        SISTEMA DE PROTOCOLOS CONTROL DE CALIDAD                    
+                    </h2>
+                    <p class="text-secondary mb-0 fw-medium">
+                        Panel de Información del Usuario
+                    </p>
+                </div>
+            </div>
+            <hr class="mt-4 mb-2 text-muted opacity-25">
+        </div>
+
+        <!-- CUERPO DEL PANEL -->
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- COLUMNA IZQUIERDA: DATOS PERSONALES -->
+                <div class="col-12 col-lg-7">
+                    <div class="h-100 p-4 border border-light shadow-sm"
+                         style="border-radius: 14px; background-color: #ffffff;">
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-3 me-3">
+                                <i class="bi bi-person-bounding-box fs-4"></i>
+                            </div>
+                            <h4 class="mb-0 fw-bold text-dark" style="color: #0f172a;">Datos Personales</h4>
+                        </div>
+
+                        <!-- GRID DE DATOS (RESPONSIVO Y ALINEADO) -->
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Nombre Completo</span>
+                                <div class="fs-6 fw-medium text-dark mt-1"><label id="lblNombre"></label></div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Apellidos Completo</span>
+                                <div class="fs-6 fw-medium text-dark mt-1"><label id="lblApellidos"></label></div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Nro Documento</span>
+                                <div class="fs-6 fw-medium text-dark mt-1"><label id="lblNroDocumento"></label></div>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted small fw-semibold text-uppercase">Correo Electrónico</span>
+                                <div class="fs-6 fw-medium text-dark mt-1 text-break">
+                                    <label id="lblCorreoElectronico"></label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Usuario Nombre</span>
+                                <div class="fs-6 fw-medium text-dark mt-1"><label id="lblUsuarioNombre"></label></div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Fecha Registro</span>
+                                <div class="fs-6 fw-medium text-dark mt-1"><label id="lblFechaRegistro"></label></div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="text-muted small fw-semibold text-uppercase">Estado</span>
+                                <div class="mt-1">
+                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-semibold">
+                                        <label id="lblEstado"></label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: INFO SISTEMA + CONSIDERACIONES -->
+                <div class="col-12 col-lg-5 d-flex flex-column g-4">
+
+                    <!-- INFORMACIÓN DEL SISTEMA -->
+                    <div class="p-4 border border-light shadow-sm mb-4 flex-fill"
+                         style="border-radius: 14px; background-color: #ffffff;">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-2 bg-info bg-opacity-10 text-info rounded-3 me-3">
+                                <i class="bi bi-info-square fs-4"></i>
+                            </div>
+                            <h4 class="mb-0 fw-bold text-dark" style="color: #0f172a;">Información del Sistema</h4>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                <span class="text-muted small fw-semibold text-uppercase">Caducidad de Contraseña</span>
+                                <span class="fw-semibold text-dark">Cada 180 días</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                <span class="text-muted small fw-semibold text-uppercase">
+                                    Máximo Intentos
+                                    Permitidos
+                                </span>
+                                <span class="fw-semibold text-dark">3 Intentos</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                <span class="text-muted small fw-semibold text-uppercase">Tiempo de Inactividad</span>
+                                <span class="fw-semibold text-dark">10 minutos</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small fw-semibold text-uppercase">Integrado con GESUT</span>
+                                <span class="badge bg-success px-2 py-1 rounded">Activo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONSIDERACIONES -->
+                    <div class="p-4 border border-light shadow-sm"
+                         style="border-radius: 14px; background-color: #fffdf5; border-left: 5px solid #eab308 !important;">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="text-warning me-2 fs-4">
+                                <i class="bi bi-exclamation-octagon-fill"></i>
+                            </div>
+                            <h5 class="mb-0 fw-bold text-dark" style="color: #854d0e;">Consideraciones Obligatorias</h5>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 small">
+                            <div class="p-2 bg-white rounded border-start border-3 border-primary shadow-xs">
+                                Se recomienda tener en cuenta el cierre de sesión al finalizar su labor, el sistema le
+                                mostrará una pantalla emergente cada 10 minutos cuando deje de usar el sistema mientras
+                                su sesión esta activa, indicando si desea cerrar o continuar.
+                            </div>
+                            <div class="p-2 bg-white rounded border-start border-3 border-info shadow-xs">
+                                El sistema está integrado con el control de roles lo que no le permitirá ingresar
+                                ciertas áreas del sistema sino tiene asignado el rol específico.
+                            </div>
+                            <div class="p-2 bg-white rounded border-start border-3 border-danger shadow-xs fw-medium text-danger">
+                                Al ingresar por tercera vez su contraseña incorrecta su cuenta será inactivada por error
+                                de contraseña y tendrá que solicitar vía correo electrónico empresarial al área de T.I
+                                Portugal, para la solicitud de activación.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

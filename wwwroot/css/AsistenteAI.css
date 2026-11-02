@@ -1,0 +1,219 @@
+﻿/* ============================
+   ASISTENTE IA MODERNO
+============================ */
+
+.ia-modal .modal-dialog {
+    max-width: 650px;
+}
+
+.ia-modal-content {
+    overflow: hidden;
+    border: 0;
+    border-radius: 22px;
+    background: #f4f7f8;
+    box-shadow: 0 25px 70px rgba(47, 64, 80, 0.35);
+}
+
+.ia-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    color: #fff;
+    background: linear-gradient(135deg, #2f4050, #2c7873);
+}
+
+.ia-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ia-brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    color: #fff;
+    font-size: 1.45rem;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+}
+
+.ia-brand small {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.ia-status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 4px;
+    background: #8bd3a8;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(139, 211, 168, 0.15);
+}
+
+.ia-modal-body {
+    padding: 24px;
+}
+
+.ia-welcome {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    margin-bottom: 18px;
+    background: #fff;
+    border: 1px solid rgba(47, 64, 80, 0.08);
+    border-radius: 16px;
+}
+
+.ia-welcome-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    color: #2c7873;
+    font-size: 1.3rem;
+    background: rgba(44, 120, 115, 0.12);
+    border-radius: 12px;
+}
+
+.ia-welcome h6 {
+    color: #2f4050;
+}
+
+.ia-welcome p,
+.ia-response p {
+    color: #71808b;
+    font-size: 0.88rem;
+}
+
+.ia-response {
+    display: flex;
+    gap: 12px;
+    min-height: 80px;
+    padding: 16px;
+    margin-bottom: 18px;
+    color: #2f4050;
+    background: #fff;
+    border-left: 4px solid #5a9a7a;
+    border-radius: 12px;
+    box-shadow: 0 5px 16px rgba(47, 64, 80, 0.06);
+}
+
+.ia-response-icon {
+    color: #5a9a7a;
+    font-size: 1.15rem;
+}
+
+.ia-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.ia-suggestion {
+    padding: 8px 12px;
+    color: #2f4050;
+    font-size: 0.82rem;
+    background: #fff;
+    border: 1px solid rgba(44, 120, 115, 0.2);
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+    .ia-suggestion i {
+        margin-right: 4px;
+        color: #2c7873;
+    }
+
+    .ia-suggestion:hover {
+        color: #fff;
+        background: #2c7873;
+        border-color: #2c7873;
+        transform: translateY(-2px);
+    }
+
+        .ia-suggestion:hover i {
+            color: #fff;
+        }
+
+.ia-input-container {
+    position: relative;
+}
+
+.ia-question-input {
+    width: 100%;
+    min-height: 76px;
+    padding: 14px 58px 14px 16px;
+    color: #2f4050;
+    resize: none;
+    background: #fff;
+    border: 1px solid #d9e2e5;
+    border-radius: 16px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+    .ia-question-input:focus {
+        border-color: #2c7873;
+        box-shadow: 0 0 0 4px rgba(44, 120, 115, 0.12);
+    }
+
+.ia-send-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    color: #fff;
+    background: #2c7873;
+    border: 0;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+    .ia-send-button:hover {
+        background: #5a9a7a;
+        transform: translateY(-2px);
+    }
+
+.ia-security-note {
+    margin-top: 14px;
+    color: #809099;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+    .ia-security-note i {
+        margin-right: 4px;
+        color: #5a9a7a;
+    }
+
+@media (max-width: 576px) {
+    .ia-modal-body {
+        padding: 16px;
+    }
+
+    .ia-modal-header {
+        padding: 16px;
+    }
+
+    .ia-suggestions {
+        flex-direction: column;
+    }
+
+    .ia-suggestion {
+        width: 100%;
+        text-align: left;
+    }
+}

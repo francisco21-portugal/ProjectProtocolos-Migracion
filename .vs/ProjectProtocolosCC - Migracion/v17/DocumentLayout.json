@@ -1,0 +1,241 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\controlcalidad\\frmbahia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\controlcalidad\\frmbahia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\home\\informacion.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\home\\informacion.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\controllers\\controlcalidadcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:controllers\\controlcalidadcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\shared\\_partialmantenimiento.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\shared\\_partialmantenimiento.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\datos\\transaccionesdatos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:datos\\transaccionesdatos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\models\\productosmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:models\\productosmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\views\\audittrail\\auditusuarios.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:views\\audittrail\\auditusuarios.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\datos\\conexion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:datos\\conexion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\controllers\\audittrailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:controllers\\audittrailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|c:\\users\\francisco.sonco\\onedrive - grupo portugal\\escritorio\\sistemas portugal\\sistema protocolos cc - migracion\\projectprotocoloscc - migracion\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7B376B8-A470-4CEC-BD42-3E02B4D4DF50}|ProjectProtocolosCC - Migracion.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "frmBAHIA.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\ControlCalidad\\frmBAHIA.cshtml",
+              "RelativeDocumentMoniker": "Views\\ControlCalidad\\frmBAHIA.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\ControlCalidad\\frmBAHIA.cshtml",
+              "RelativeToolTip": "Views\\ControlCalidad\\frmBAHIA.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-29T20:46:36.378Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Informacion.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Home\\Informacion.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Informacion.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Home\\Informacion.cshtml",
+              "RelativeToolTip": "Views\\Home\\Informacion.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-27T19:29:31.916Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAALQAAAAAAAAAAAAswNIAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-27T16:38:03.705Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ControlCalidadController.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\ControlCalidadController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ControlCalidadController.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\ControlCalidadController.cs",
+              "RelativeToolTip": "Controllers\\ControlCalidadController.cs",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAUwFoAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T20:17:59.179Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACIAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-27T16:37:47.82Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_PartialMantenimiento.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Shared\\_PartialMantenimiento.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_PartialMantenimiento.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\Shared\\_PartialMantenimiento.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_PartialMantenimiento.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-27T20:25:46.055Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TransaccionesDatos.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Datos\\TransaccionesDatos.cs",
+              "RelativeDocumentMoniker": "Datos\\TransaccionesDatos.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Datos\\TransaccionesDatos.cs",
+              "RelativeToolTip": "Datos\\TransaccionesDatos.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAowHkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T19:08:42.804Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAAwCkAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T16:38:56.243Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ProductosModel.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Models\\ProductosModel.cs",
+              "RelativeDocumentMoniker": "Models\\ProductosModel.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Models\\ProductosModel.cs",
+              "RelativeToolTip": "Models\\ProductosModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-29T20:32:30.104Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AuditUsuarios.cshtml",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\AuditTrail\\AuditUsuarios.cshtml",
+              "RelativeDocumentMoniker": "Views\\AuditTrail\\AuditUsuarios.cshtml",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Views\\AuditTrail\\AuditUsuarios.cshtml",
+              "RelativeToolTip": "Views\\AuditTrail\\AuditUsuarios.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-27T19:57:31.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Conexion.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Datos\\Conexion.cs",
+              "RelativeDocumentMoniker": "Datos\\Conexion.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Datos\\Conexion.cs",
+              "RelativeToolTip": "Datos\\Conexion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T18:43:12.268Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AuditTrailController.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\AuditTrailController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuditTrailController.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Controllers\\AuditTrailController.cs",
+              "RelativeToolTip": "Controllers\\AuditTrailController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T19:56:06.341Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\francisco.sonco\\OneDrive - Grupo Portugal\\Escritorio\\SISTEMAS PORTUGAL\\SISTEMA PROTOCOLOS CC - MIGRACION\\ProjectProtocolosCC - Migracion\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T16:30:34.69Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

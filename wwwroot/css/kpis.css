@@ -1,0 +1,152 @@
+/* =========================================================================
+   KPIS.CSS - ESTILOS PARA INDICADORES (KPIS), BADGES Y ANIMACIONES DE AUDITORÍA
+   SISTEMA CONTROL DE CALIDAD - INSUMOS
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. TARJETAS DE INDICADORES (KPIs)
+   ------------------------------------------------------------------------- */
+.kpi-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Franja decorativa superior por tipo de métrica */
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-color, #2c7873);
+}
+
+.kpi-card.kpi-primary::before { background: #2c7873; }
+.kpi-card.kpi-info::before { background: #0288d1; }
+.kpi-card.kpi-warning::before { background: #f57c00; }
+.kpi-card.kpi-success::before { background: #2e7d32; }
+
+/* Contenedor de iconos */
+.kpi-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.kpi-icon-primary { background: rgba(44, 120, 115, 0.12); color: #2c7873; }
+.kpi-icon-info { background: rgba(2, 136, 209, 0.12); color: #0288d1; }
+.kpi-icon-warning { background: rgba(245, 124, 0, 0.14); color: #e65100; }
+.kpi-icon-success { background: rgba(46, 125, 50, 0.12); color: #2e7d32; }
+
+/* Contenido de texto y valor numérico */
+.kpi-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.kpi-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1.2;
+    margin-bottom: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-subtext {
+    font-size: 0.78rem;
+    color: #888;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* -------------------------------------------------------------------------
+   2. BADGES DE ACCIONES Y ESTADOS
+   ------------------------------------------------------------------------- */
+.badge-audit,
+.badge-trans {
+    font-size: 0.76rem;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-insert { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.badge-update { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+.badge-delete { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+.badge-login  { background: #e0f2f1; color: #00695c; border: 1px solid #b2dfdb; }
+.badge-logout { background: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
+.badge-alert  { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; animation: pulseGlow 2s infinite; }
+
+/* -------------------------------------------------------------------------
+   3. ANIMACIONES
+   ------------------------------------------------------------------------- */
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.3); }
+    50% { box-shadow: 0 0 6px 2px rgba(245, 124, 0, 0.4); }
+}
+
+@keyframes blinkDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+/* -------------------------------------------------------------------------
+   4. COMPONENTES DE AUTO-REFRESCO
+   ------------------------------------------------------------------------- */
+.refresh-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.refresh-indicator {
+    width: 8px;
+    height: 8px;
+    background: #2c7873;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blinkDot 1.5s infinite;
+}

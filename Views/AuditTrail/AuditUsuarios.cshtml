@@ -1,0 +1,630 @@
+﻿@{
+    ViewData["Title"] = "Auditoría de Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Hoja de estilos compartida para KPIs, badges y animaciones -->
+<link rel="stylesheet" href="~/css/kpis.css" asp-append-version="true" />
+
+@section Scripts {
+    <script>
+        // =========================================================================
+        // AUDITORÍA DE USUARIOS - GESTIÓN DE TABLA, FILTROS Y KPIS REACTIVOS
+        // =========================================================================
+        // REGLA DE FUNCIONAMIENTO DE LOS FILTROS:
+        //   - Usuario y Acción  -> se filtran en el CLIENTE (respuesta instantánea)
+        //   - Fechas           -> se filtran en el SERVIDOR vía usp_AuditTrailListar
+        //     (requiere AMBAS fechas; si están vacías se envían null y el SP
+        //      devuelve todo el histórico, que es el estado por defecto)
+        // =========================================================================
+
+        var tablaAuditUsuarios = null;
+        var segundosRestantes = 60;
+        var intervaloTemporizador = null;
+
+        $(document).ready(function () {
+            // Inicializar la tabla de auditoría de usuarios
+            ufn_InicializarTablaAuditUsuarios();
+
+            // Configurar temporizador para auto-refresco cada 1 minuto (60 segundos)
+            iniciarAutoRefrescoMinuto();
+
+            // Evento para el botón de limpiar filtros
+            $('#btnLimpiarFiltros').on('click', function () {
+                ufn_LimpiarFiltros();
+            });
+
+            // Usuario y Acción: filtrado reactivo en el cliente (instantáneo)
+            $('#filtroUsuario').on('input', function () {
+                ufn_AplicarFiltrosCliente();
+            });
+            $('#filtroAccion').on('change', function () {
+                ufn_AplicarFiltrosCliente();
+            });
+
+            // Fechas: requieren ambas para armar el rango; se consulta al SERVIDOR
+            $('#filtroFechaDesde, #filtroFechaHasta').on('change', function () {
+                ufn_AplicarFiltrosFecha();
+            });
+        });
+
+        /**
+         * Inicializa la tabla DataTables con carga AJAX, scroll y renderers personalizados
+         */
+        function ufn_InicializarTablaAuditUsuarios() {
+            $.fn.dataTable.ext.search =
+                $.fn.dataTable.ext.search.filter(function (funcion) {
+                    return funcion !== filtroPersonalizadoUsuarios;
+                });
+
+            $.fn.dataTable.ext.search.push(filtroPersonalizadoUsuarios);
+
+            tablaAuditUsuarios = $('#tblAuditUsuarios').DataTable({
+                destroy: true,
+                processing: true,
+                scrollY: '52vh',
+                scrollCollapse: true,
+                scrollX: true,
+                ajax: {
+                    url: '@Url.Action("ObtenerAuditUsuariosTransaccionesStreaming_Controller", "AuditTrail")',
+                    type: 'GET',
+                    data: function (parametros) {
+                        return {
+                            fechaDesde: $('#filtroFechaDesde').val() || null,
+                            fechaHasta: $('#filtroFechaHasta').val() || null
+                        };
+                    },
+                    dataSrc: function (respuesta) { return respuesta?.data ?? []; }
+                },
+                // Las columnas 0..7 coinciden con los <th> del <thead>.
+                // Las columnas 8..12 son auxiliares y están ocultas.
+                columns: [
+                    { data: 'idAuditTrail', defaultContent: '-',
+                        render: function (data, type) {
+                            if (data == null) return '-';
+
+                             if (type === 'display') {
+                                return `<span class="text-muted small">
+                                            <i class="fas fa-hashtag me-1"></i>${String(data).padStart(9, '0')}
+                                        </span>`;
+                            }
+                            return data;
+                        }
+                    },
+                    { data: 'usuario', defaultContent: '-',
+                        render: function (data) {
+                            return data != null
+                                ? `<span class="badge rounded-pill bg-primary">
+                                        <i class="fas fa-user me-1"></i>${data}
+                                   </span>`
+                                : '-';
+                        }
+                    },
+                    { data: 'accion', defaultContent: '-',
+                        render: function (data) {
+                            if (!data) { return '-'; }
+                            const accion = String(data).trim().toUpperCase();
+                            if (accion === 'INSERT') {
+                                return `
+                                    <span class="badge badge-trans badge-insert">
+                                        <i class="bi bi-plus-circle-fill"></i>
+                                        ${data}
+                                    </span>`;
+                            }
+                            if (accion === 'UPDATE') {
+                                return `
+                                    <span class="badge badge-trans badge-update">
+                                        <i class="bi bi-pencil-fill"></i>
+                                        ${data}
+                                    </span>`;
+                            }
+                            if (accion === 'DELETE') {
+                                return `
+                                    <span class="badge badge-trans badge-delete">
+                                        <i class="bi bi-trash-fill"></i>
+                                        ${data}
+                                    </span>`;
+                            }
+                            if (accion.indexOf('SESION') !== -1) {
+                                return `
+                                    <span class="badge badge-trans badge-update">
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                        ${data}
+                                    </span>`;
+                            }
+                            return `
+                                <span class="badge badge-trans badge-update">
+                                    ${data}
+                                </span>`;
+                        }
+                    },
+                    { data: 'fechaRegistroAccion',
+                        render: function (data, type, row) {
+                            if (type === 'sort' || type === 'type') {
+                                return data ?? '';
+                            }
+                            let fecha = row.fechaHoraFormato ?? data ?? '-';
+                            fecha = String(fecha).replace('T', ' ');
+                            return data
+                                ? `<span class="badge rounded-pill bg-light text-dark border">
+                                        <i class="fas fa-calendar-alt text-primary me-1"></i>${fecha}
+                                   </span>`
+                                : '-';
+                        }
+                    },
+                    { data: 'nroRegistro', defaultContent: '-',
+                        render: function (data) { return data ?? '-'; }
+                    },
+                    { data: 'tabla', defaultContent: '-',
+                        render: function (data) {
+                            return `<span class="text-primary">
+                                        <i class="bi bi-table me-1"></i>
+                                        ${data ?? '-'}
+                                    </span>`;
+                        }
+                    },
+                    { data: 'valorAnterior', defaultContent: '-',
+                        render: function (data) {
+                            return data != null ? `<span class="text-danger">${data}</span>` : '-';
+                        }
+                    },
+                    { data: 'valorNuevo', defaultContent: '-',
+                        render: function (data) {
+                            return data != null ? `<span style="color: green;">${data}</span>` : '-';
+                        }
+                    },
+                    { data: 'motivoCambio', defaultContent: '-',
+                        render: function (data) { return data ?? '-'; }
+                    },
+                    // ---- Columnas auxiliares ocultas ----
+                    { data: 'idAuditTrail', visible: false, searchable: false,
+                        render: function (data) { return data ?? '-'; }
+                    },
+                    { data: 'iDusuario', visible: false, searchable: false,
+                        render: function (data) { return data ?? '-'; }
+                    },
+                    { data: 'nombreCampo', visible: false, searchable: false,
+                        render: function (data) {
+                            return data != null ? `<span class="badge bg-secondary">${data}</span>` : '-';
+                        }
+                    },
+                    { data: 'idRegistro', visible: false, searchable: false,
+                        render: function (data) { return data ?? '-'; }
+                    },
+                    { data: 'iP', visible: false, searchable: false,
+                        render: function (data) { return data ?? '-'; }
+                    }
+                ],
+                columnDefs: [
+                    {
+                        targets: [0, 3],
+                        className: 'text-center'
+                    }
+                ],
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/2.1.5/i18n/es-MX.json',
+                    lengthMenu: 'Mostrar _MENU_ registros por página',
+                    emptyTable: 'No existen registros de auditoría'
+                },
+
+                lengthMenu: [ [10, 25, 50, 100], ['10', '25', '50', '100'] ],
+                // Orden descendente por FECHA (columna 2). Antes usaba [[12,'desc']]
+                // que ordenaba por la columna iP, no por la fecha.
+                order: [[2, 'desc']],
+                drawCallback: function () {
+                    ufn_ActualizarKPIs();
+                }
+            });
+        }
+
+        /**
+         * Aplica los filtros de USUARIO y ACCIÓN en el cliente (instantáneo, sin ir al servidor).
+         */
+        function ufn_AplicarFiltrosCliente() {
+            if (tablaAuditUsuarios) {
+                tablaAuditUsuarios.draw();
+            }
+        }
+
+        /**
+         * Aplica el filtro de FECHAS consultando al SERVIDOR (usp_AuditTrailListar).
+         * Exige ambas fechas para armar el rango. Si están vacías se envían null
+         * y el SP devuelve todo el histórico (estado por defecto de la página).
+         */
+        function ufn_AplicarFiltrosFecha() {
+                const fechaDesde = $('#filtroFechaDesde').val();
+                const fechaHasta = $('#filtroFechaHasta').val();
+
+                // Si alguna de las dos fechas está vacía, no consultar
+                if (!fechaDesde || !fechaHasta) {
+                    return;
+                }
+
+                // Validar que la fecha inicial no sea mayor que la final
+                if (fechaDesde > fechaHasta) {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Rango inválido',
+                        text: 'La fecha inicial no puede ser mayor que la fecha final.',
+                        confirmButtonText: 'Aceptar'
+                    });
+
+                    $(this).val('');
+                    return;
+                }
+            // reload(null, true) -> vuelve a pedir los datos al servidor y regresa a la página 1
+            tablaAuditUsuarios.ajax.reload(null, true);
+        }
+
+        /**
+         * Restablece los filtros y recarga TODO el histórico (fechas en null).
+         */
+        function ufn_LimpiarFiltros() {
+            $('#filtroUsuario').val('');
+            $('#filtroAccion').val('');
+            $('#filtroFechaDesde').val('');
+            $('#filtroFechaHasta').val('');
+            if (tablaAuditUsuarios) {
+                tablaAuditUsuarios.ajax.reload(null, true);
+            }
+        }
+
+        /**
+         * Búsqueda personalizada de DataTables.
+         * NOTA: el nombre de esta función DEBE coincidir con el que se registra en
+         * $.fn.dataTable.ext.search.push(...) dentro de ufn_InicializarTablaAuditUsuarios.
+         */
+        function filtroPersonalizadoUsuarios(settings, searchData, index, rowData, counter) {
+            // Asegurar que solo aplique a la tabla de usuarios
+            if (!settings || !settings.nTable || settings.nTable.id !== 'tblAuditUsuarios') {
+                return true;
+            }
+
+            // 1. Filtro por Usuario
+            // La propiedad del modelo es 'usuario' (NO 'usuarioNombre'), por eso el
+            // filtro se quedaba sin efecto anteriormente.
+            var usuarioFiltro = ($('#filtroUsuario').val() || '').trim().toLowerCase();
+            if (usuarioFiltro) {
+                var usuarioFila = (rowData.usuario || '').toString().toLowerCase();
+                if (usuarioFila.indexOf(usuarioFiltro) === -1) {
+                    return false;
+                }
+            }
+
+            // 2. Filtro por Acción
+            var accionFiltro = ($('#filtroAccion').val() || '').trim().toUpperCase();
+            if (accionFiltro) {
+                var accionFila = (rowData.accion || '').toString().toUpperCase();
+                if (accionFila.indexOf(accionFiltro) === -1) {
+                    return false;
+                }
+            }
+
+            // 3. El rango de fechas NO se resuelve aquí: lo aplica el servidor
+            //    (usp_AuditTrailListar) a través de ajax.reload().
+
+            return true;
+        }
+
+        /**
+         * Recalcula los 6 indicadores superiores.
+         * - KPI 1 y KPI 6 usan el total cargado (el rango de fechas ya viene filtrado
+         *   desde el servidor porque las fechas viajan en la petición AJAX).
+         * - KPI 2 a KPI 5 usan los datos que cumplen TODOS los filtros aplicados.
+         */
+        function ufn_ActualizarKPIs() {
+            if (!tablaAuditUsuarios) return;
+
+            // Datos que cumplen con los filtros actuales
+            var datosFiltrados = tablaAuditUsuarios.rows({ filter: 'applied' }).data().toArray();
+            // Todos los registros cargados (respetando el rango de fechas del servidor)
+            var datosTotales = tablaAuditUsuarios.rows().data().toArray();
+
+            // KPI 1: Total de movimientos (total de registros del rango cargado)
+            animarContador('kpiTotalMovimientos', datosTotales.length);
+
+            // KPI 2: Usuarios únicos que ingresaron según los filtros
+            var setUsuarios = new Set();
+            datosFiltrados.forEach(function (row) {
+                if (row.usuario) setUsuarios.add(String(row.usuario).trim().toUpperCase());
+            });
+            animarContador('kpiUsuariosUnicos', setUsuarios.size);
+
+            // KPI 3: Cantidad de INSERT según los filtros
+            animarContador('kpiInsert', ufn_ContarAcciones(datosFiltrados, 'INSERT'));
+
+            // KPI 4: Cantidad de UPDATE según los filtros
+            animarContador('kpiUpdate', ufn_ContarAcciones(datosFiltrados, 'UPDATE'));
+
+            // KPI 5: Cantidad de sesiones ingresadas según los filtros
+            animarContador('kpiSesiones', ufn_ContarSesiones(datosFiltrados));
+
+            // KPI 6: Registros filtrados / visibles en la tabla
+            animarContador('kpiRegistrosFiltrados', datosFiltrados.length);
+        }
+
+        /**
+         * Cuenta los registros cuya acción contiene el texto indicado (INSERT, UPDATE, etc.)
+         */
+        function ufn_ContarAcciones(filas, accionBuscada) {
+            var total = 0;
+            filas.forEach(function (row) {
+                if (!row.accion) return;
+                if (String(row.accion).trim().toUpperCase().indexOf(accionBuscada) !== -1) {
+                    total++;
+                }
+            });
+            return total;
+        }
+
+        /**
+         * Cuenta los inicios de sesión. Acepta "INICIO SESION" y "LOGIN".
+         */
+        function ufn_ContarSesiones(filas) {
+            var total = 0;
+            filas.forEach(function (row) {
+                if (!row.accion) return;
+                var accion = String(row.accion).trim().toUpperCase();
+                if ((accion.indexOf('INICIO') !== -1 && accion.indexOf('SESION') !== -1)
+                    || accion.indexOf('LOGIN') !== -1) {
+                    total++;
+                }
+            });
+            return total;
+        }
+
+        /**
+         * Efecto de animación numérica fluida para los KPIs
+         */
+        function animarContador(elementId, valorFinal) {
+            var $elem = $('#' + elementId);
+            if (!$elem.length) return;
+
+            var valorActual = parseInt($elem.text().replace(/\D/g, '')) || 0;
+            if (valorActual === valorFinal) return;
+
+            var duracion = 500;
+            var pasos = 20;
+            var incremento = (valorFinal - valorActual) / pasos;
+            var pasoActual = 0;
+
+            var temporizador = setInterval(function () {
+                pasoActual++;
+                valorActual += incremento;
+                $elem.text(Math.round(valorActual));
+                if (pasoActual >= pasos) {
+                    clearInterval(temporizador);
+                    $elem.text(valorFinal);
+                }
+            }, duracion / pasos);
+        }
+
+        /**
+         * Configura y gestiona el auto-refresco de 1 minuto sin destruir filtros ni tabla
+         */
+        function iniciarAutoRefrescoMinuto() {
+            segundosRestantes = 60;
+            actualizarTextoTemporizador();
+
+            // Actualizar cuenta regresiva visual cada segundo
+            intervaloTemporizador = setInterval(function () {
+                segundosRestantes--;
+                if (segundosRestantes <= 0) {
+                    segundosRestantes = 60;
+                    ufn_RecargarTablaSinDestruir();
+                }
+                actualizarTextoTemporizador();
+            }, 1000);
+        }
+
+        function actualizarTextoTemporizador() {
+            $('#lblContadorRefresco').text(segundosRestantes + 's');
+        }
+
+        /**
+         * Recarga los datos vía AJAX preservando la paginación y los filtros aplicados por el usuario.
+         * El rango de fechas vuelve a viajar al servidor, así que el auto-refresco NO pierde
+         * el filtro de fechas ni lo reinicia: ajax.data se vuelve a ejecutar en cada reload.
+         */
+        function ufn_RecargarTablaSinDestruir() {
+            if (tablaAuditUsuarios) {
+                // NOTA TÉCNICA: El parámetro 'false' en reload(null, false)
+                // mantiene la posición del paginado y NO destruye la tabla ni resetea los filtros.
+                tablaAuditUsuarios.ajax.reload(function () {
+                    // Los KPIs se recalculan automáticamente en drawCallback
+                }, false);
+            }
+        }
+    </script>
+}
+
+<div class="container-fluid">
+    <!-- ENCABEZADO DE LA PÁGINA (Estilo idéntico a CC_Columnas_Index) -->
+    <div class="header py-2 d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title mb-1"><i class="bi bi-person-lines-fill me-2"></i>Auditoría / Movimientos de Usuarios</h1>
+            <p class="page-subtitle mb-0 small">Control y monitoreo en tiempo real de accesos, inicios de sesión y operaciones realizadas por usuarios.</p>
+        </div>
+        <div>
+            <!-- Indicador dinámico de refresco automático cada 1 minuto -->
+            <div class="refresh-pill shadow-sm" title="La tabla se actualiza cada 1 minuto preservando tus filtros">
+                <span class="refresh-indicator"></span>
+                <span>Auto-refresco en: <strong id="lblContadorRefresco" class="text-primary">60s</strong></span>
+                <button type="button" class="btn btn-sm btn-link p-0 text-primary ms-1" onclick="ufn_RecargarTablaSinDestruir()" title="Actualizar ahora">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE INDICADORES (KPIS) MODERNOS Y REACTIVOS -->
+    <div class="row g-3 mb-3">
+        <!-- KPI 1: Total de Movimientos del rango cargado -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-primary">
+                <div class="kpi-icon-wrapper kpi-icon-primary">
+                    <i class="bi bi-activity"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Total Movimientos</div>
+                    <div class="kpi-value" id="kpiTotalMovimientos">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-database me-1"></i>Del día por defecto, o del rango de fechas filtrado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 2: Usuarios únicos ingresados según filtros -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-info">
+                <div class="kpi-icon-wrapper kpi-icon-info">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Usuarios Ingresados</div>
+                    <div class="kpi-value" id="kpiUsuariosUnicos">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-person-check me-1"></i>Usuarios únicos según filtros</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 3: Cantidad de INSERT según filtros -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-success">
+                <div class="kpi-icon-wrapper kpi-icon-success">
+                    <i class="bi bi-plus-circle-fill"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Inserciones (INSERT)</div>
+                    <div class="kpi-value" id="kpiInsert">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-file-earmark-plus me-1"></i>Registros creados según filtros</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 4: Cantidad de UPDATE según filtros -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-warning">
+                <div class="kpi-icon-wrapper kpi-icon-warning">
+                    <i class="bi bi-pencil-fill"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Movimientos (UPDATE)</div>
+                    <div class="kpi-value" id="kpiUpdate">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-pencil-square me-1"></i>Registros modificados según filtros</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 5: Sesiones ingresadas según filtros -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-info">
+                <div class="kpi-icon-wrapper kpi-icon-info">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Sesiones Ingresadas</div>
+                    <div class="kpi-value" id="kpiSesiones">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-door-open me-1"></i>Inicios de sesión según filtros</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 6: Registros filtrados / visibles -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="kpi-card kpi-primary">
+                <div class="kpi-icon-wrapper kpi-icon-primary">
+                    <i class="bi bi-funnel-fill"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Registros Filtrados</div>
+                    <div class="kpi-value" id="kpiRegistrosFiltrados">0</div>
+                    <p class="kpi-subtext"><i class="bi bi-eye me-1"></i>Visibles con los filtros aplicados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE FILTROS DE BÚSQUEDA (Mismo estilo que CC_Columnas_Index) -->
+    <div class="search-filters mb-3">
+        <div class="filtros-tabla mb-1">
+            <div class="row g-2">
+                <!-- Filtro por Usuario -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label class="filter-label" for="filtroUsuario"><i class="bi bi-person me-1"></i>Nombre de Usuario</label>
+                    <input type="text" class="form-control form-control-sm" id="filtroUsuario" placeholder="Buscar por usuario..." />
+                </div>
+
+                <!-- Filtro por Acción -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label class="filter-label" for="filtroAccion"><i class="bi bi-lightning-charge me-1"></i>Acción</label>
+                    <select class="form-select form-select-sm" id="filtroAccion">
+                        <option value="">Todas las acciones</option>
+                        <option value="INICIO SESION">Inicio de Sesión</option>
+                        <option value="CIERRE SESION">Cierre de Sesión</option>
+                        <option value="INSERT">INSERT (Creación)</option>
+                        <option value="UPDATE">UPDATE (Modificación)</option>
+                        <option value="DELETE">DELETE (Eliminación)</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Fecha Desde -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label class="filter-label" for="filtroFechaDesde"><i class="bi bi-calendar-event me-1"></i>Fecha Inicio</label>
+                    <input type="date" class="form-control form-control-sm" id="filtroFechaDesde" />
+                </div>
+
+                <!-- Filtro Fecha Hasta -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label class="filter-label" for="filtroFechaHasta"><i class="bi bi-calendar-check me-1"></i>Fecha Fin</label>
+                    <input type="date" class="form-control form-control-sm" id="filtroFechaHasta" />
+                </div>
+            </div>
+
+            @*<div class="form-text small text-muted mt-1">
+                <i class="bi bi-info-circle me-1"></i>
+                Sin fechas se muestra todo el histórico (comportamiento por defecto).
+                Para acotar a un rango debe ingresar <strong>ambas</strong> fechas: la consulta se ejecuta en el servidor
+                (<code>usp_AuditTrailListar</code>) y los 6 indicadores se recalculan con ese rango.
+            </div> *@
+        </div>
+
+        <!-- CONTENEDOR DE TABLA DATATABLE CON SCROLL -->
+        <div class="data-table-container mt-3">
+            <div class="table-header d-flex justify-content-between align-items-center">
+                <h3 class="table-title mb-0">
+                    <i class="bi bi-list-ul me-2"></i>Historial de Movimientos de Usuarios
+                </h3>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnLimpiarFiltros">
+                        <i class="bi bi-eraser me-1"></i> Limpiar filtros
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="ufn_RecargarTablaSinDestruir()">
+                        <i class="bi bi-arrow-repeat me-1"></i> Refrescar datos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla responsiva con scroll interno -->
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle" id="tblAuditUsuarios" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>#NRO</th>
+                            <th>USUARIO</th>
+                            <th>ACCIÓN</th>
+                            <th>FECHA Y HORA</th>
+                            <th>NRO REGISTRO</th>
+                            <th>TABLA / MÓDULO</th>
+                            <th>VALOR ANTERIOR</th>
+                            <th>VALOR NUEVO</th>
+                            <th>MOTIVO DE CAMBIO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Carga dinámica vía AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
