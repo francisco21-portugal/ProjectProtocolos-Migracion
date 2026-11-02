@@ -12,7 +12,7 @@
         public string GetCadenaSQL()
         {
             return CadenaSQL;
-        }
+            }
 
 
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using PROJECT_INSUMOS.Datos;
 using PROJECT_INSUMOS.Models;
 using ProjectInsumosCC___Migracion.Models;
@@ -134,7 +135,7 @@ namespace ProjectInsumosCC___Migracion.Datos
 
                     yield break;
                 }
-                int xIDproducto = rd.GetOrdinal("IDproducto");
+                //int xIDproducto = rd.GetOrdinal("IDproducto");
                 int xProducto = rd.GetOrdinal("Producto");
                 int xCodigo = rd.GetOrdinal("Codigo");
                 int xFechaRegistro = rd.GetOrdinal("FechaRegistro");
@@ -147,7 +148,7 @@ namespace ProjectInsumosCC___Migracion.Datos
                 {
                     var registro = new ProductosModel
                     {
-                        IDproducto = rd.IsDBNull(xIDproducto) ? 0 : rd.GetInt32(xIDproducto),
+                       // IDproducto = rd.IsDBNull(xIDproducto) ? 0 : rd.GetInt64(xIDproducto),
                         ProductoNombre = rd.IsDBNull(xProducto) ? "--" : rd.GetString(xProducto),
                         CodigoProducto = rd.IsDBNull(xCodigo) ? "--" : rd.GetString(xCodigo),
                         FechaIngreso = rd.IsDBNull(xFechaRegistro) ? (DateTime?)null : rd.GetDateTime(xFechaRegistro),
@@ -167,5 +168,95 @@ namespace ProjectInsumosCC___Migracion.Datos
             }
         }
 
+
+        public IEnumerable<ProductosModel> CC_BuscarProtocolosPorProducto (string Codigo)
+        {
+            using (var conexion = new SqlConnection(cn.GetCadenaSQL()))
+            {
+                conexion.Open();
+
+                using var cmd = new SqlCommand("BuscarProducto", conexion)
+                {
+                    CommandType = CommandType.StoredProcedure,
+                    CommandTimeout = 300
+                };
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar,20).Value = Codigo;
+                //cmd.Parameters.Add("@FechaFin", SqlDbType.Date).Value = FechaFin.HasValue ? FechaFin.Value.ToDateTime(TimeOnly.MinValue) : DBNull.Value;
+
+
+                using var rd = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                if (!rd.HasRows)
+                {
+                    yield return new ProductosModel
+                    {
+                        CodMensaje = "0",
+                        Mensaje = "No hay protocolos por mostrar para mostrar."
+                    };
+
+                    yield break;
+                }
+                int xIDproducto = rd.GetOrdinal("IDproducto");
+                int xRuta = rd.GetOrdinal("Ruta");
+                int xArchivo = rd.GetOrdinal("Archivo");
+                int xCodigo = rd.GetOrdinal("Codigo");
+                int xLote = rd.GetOrdinal("Lote");
+                int xidCategoria = rd.GetOrdinal("idCategoria");
+                int xActivo = rd.GetOrdinal("Activo");
+                int xFechaRegistro = rd.GetOrdinal("FechaRegistro");
+
+                // Bandera para saber si ya se envió el primer registro
+                //bool primerRegistro = true;
+
+                while (rd.Read())
+                {
+                    var registro = new ProductosModel
+                    {
+                        IDproducto = rd.IsDBNull(xIDproducto) ? 0 : rd.GetInt64(xIDproducto),
+                        Ruta = rd.IsDBNull(xRuta) ? "--" : rd.GetString(xRuta),
+                        Archivo = rd.IsDBNull(xArchivo) ? "--" : rd.GetString(xArchivo),
+                        Codigo = rd.IsDBNull(xCodigo) ? "--" : rd.GetString(xCodigo),
+                        Lote = rd.IsDBNull(xLote) ? "--" : rd.GetString(xLote),
+                        IDcategoria = rd.IsDBNull(xidCategoria) ? 0 : rd.GetInt32(xidCategoria),
+                        Estado= rd.IsDBNull(xActivo) ? 0 : rd.GetInt32(xActivo),
+                        FechaIngreso = rd.IsDBNull(xFechaRegistro) ? null : rd.GetDateTime(xFechaRegistro),
+                    };
+
+                    //if (primerRegistro)
+                    //{
+                    //    registro.CodMensaje = 1;
+                    //    registro.Mensaje = string.Empty;
+                    //    primerRegistro = false;
+                    //}
+
+                    yield return registro;
+                }
+
+            }
+        }
+        public async Task<ProductosModel?> ObtenerPDF(long IDproducto)
+        {
+            
+            using var conexion = new SqlConnection(cn.GetCadenaSQL());
+            using var cmd = new SqlCommand("usp_VerProtocoloPDF", conexion);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@IDproducto", SqlDbType.BigInt).Value = IDproducto;
+
+            await conexion.OpenAsync();
+
+            using var rd = await cmd.ExecuteReaderAsync();
+
+            if (!await rd.ReadAsync())
+                return null;
+
+            return new ProductosModel
+            {
+                PDF = rd.IsDBNull(rd.GetOrdinal("PDF")) ? null : rd.GetFieldValue<byte[]>(rd.GetOrdinal("PDF")),
+
+                Archivo = rd.IsDBNull(rd.GetOrdinal("Archivo"))? null: rd.GetString(rd.GetOrdinal("Archivo"))
+            };
+        }
     }
 }

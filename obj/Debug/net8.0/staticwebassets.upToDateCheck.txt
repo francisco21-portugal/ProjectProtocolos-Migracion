@@ -11,6 +11,7 @@ wwwroot\favicon.ico
 wwwroot\img\fondo01.jpg
 wwwroot\img\LogoPprtugal.png
 wwwroot\img\LogoTipoPortugal.png
+wwwroot\js\AsistenteAIScript.js
 wwwroot\js\Menu.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

@@ -102,7 +102,43 @@ namespace ProjectInsumosCC___Migracion.Controllers
                 });
             }
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult CC_BuscarProtocolosPorProducto_Controller(string Codigo)
+        {
+            try
+            {
+                var datos = _transaccionesDatos.CC_BuscarProtocolosPorProducto(Codigo);
 
+                // Si no hay registros, devuelve 200 OK con data vacía.
+                return Ok(new
+                {
+                    data = datos
+                });
+            }
+            catch (Exception ex)
+            {
+                // Este bloque solo se ejecuta si existe un error real
+                // de conexión, SQL o ejecución del procedimiento.
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    data = Array.Empty<ProductosModel>(),
+                    codMensaje = 0,
+                    mensaje = "Ocurrió un error al consultar los protocolos."
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerPDF_Controller(long IDproducto)
+        {
+            var producto = await _transaccionesDatos.ObtenerPDF(IDproducto);
+
+            if (producto == null || producto.PDF == null)
+                return NotFound("No se encontró el archivo PDF.");
+
+            return File(producto.PDF, "application/pdf");
+        }
 
 
     }

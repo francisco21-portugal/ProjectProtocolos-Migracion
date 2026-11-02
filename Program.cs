@@ -36,8 +36,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Index");
 });
 
-/*/**/
-
 
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
