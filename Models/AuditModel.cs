@@ -25,6 +25,16 @@ namespace PROJECT_INSUMOS.Models
     }
 
 
+
+
+
+
+
+
+    /// <summary>
+    /// mejorado
+    /// </summary>
+
     public class AsistentePreguntaModel
     {
         public string Pregunta { get; set; } = string.Empty;
